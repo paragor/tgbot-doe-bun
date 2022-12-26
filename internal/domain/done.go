@@ -59,6 +59,11 @@ func (p *DoneMiddleware) Income(ctx context.Context, msg *tgbotapi.Message) (nex
 		}
 		return false, originErr
 	}
+	answer := tgbotapi.NewMessage(msg.Chat.ID, "OK, done")
+	answer.ReplyToMessageID = msg.MessageID
+	if _, err := p.tg.Send(answer); err != nil {
+		return false, fmt.Errorf("done: cant send ok answer:%w", err)
+	}
 
 	return false, nil
 }

@@ -32,7 +32,7 @@ func (p *DelayIncomeMiddleware) Income(ctx context.Context, msg *tgbotapi.Messag
 		return false, saveTaskErr
 
 	}
-	answer := tgbotapi.NewMessage(msg.Chat.ID, fmt.Sprintf("ok, notify after %s", task.Next.Format(time.RFC822)))
+	answer := tgbotapi.NewMessage(msg.Chat.ID, fmt.Sprintf("ok, notify after %s. Reply origin msg with txt 'done' to finish it.", task.Next.Format(time.RFC822)))
 	answer.ReplyToMessageID = msg.MessageID
 	if _, err := p.tg.Send(answer); err != nil {
 		return false, fmt.Errorf("done: cant send 'ok' answer: %s", err)
