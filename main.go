@@ -38,16 +38,17 @@ func main() {
 	}
 	defer closeDb()
 	tdb := domain.NewTaskDatabase(lowLevelDb)
+	delayTime := time.Hour
 	ingress := tg.NewIngress([]tg.Middleware{
 		domain.NewAuthMiddleware(lowLevelDb, secretKey),
 		domain.NewDoneMiddleware(tdb, bot),
-		domain.NewDelayIncomeMiddleware(tdb, bot, time.Hour),
+		domain.NewDelayIncomeMiddleware(tdb, bot, delayTime),
 	})
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	notify := domain.NewNotifyWorker(time.Minute, tdb, bot)
+	notify := domain.NewNotifyWorker(time.Minute, delayTime, tdb, bot)
 	go func() {
 		err := notify.Run()
 		if err != nil {

@@ -10,12 +10,13 @@ import (
 
 type NotifyWorker struct {
 	every time.Duration
+	delay time.Duration
 	tdb   *TaskDatabase
 	tg    *tgbotapi.BotAPI
 }
 
-func NewNotifyWorker(every time.Duration, tdb *TaskDatabase, tg *tgbotapi.BotAPI) *NotifyWorker {
-	return &NotifyWorker{every: every, tdb: tdb, tg: tg}
+func NewNotifyWorker(every time.Duration, delay time.Duration, tdb *TaskDatabase, tg *tgbotapi.BotAPI) *NotifyWorker {
+	return &NotifyWorker{every: every, delay: delay, tdb: tdb, tg: tg}
 }
 
 func (n *NotifyWorker) Run() error {
@@ -48,6 +49,7 @@ func (n *NotifyWorker) round() error {
 			return fmt.Errorf("notify: cant send msg: %w", err)
 		}
 		task.Count++
+		task.Next.Add(n.delay)
 		err = n.tdb.SaveTask(ctx, task)
 		if err != nil {
 			return fmt.Errorf("save: cant send task: %w", err)
