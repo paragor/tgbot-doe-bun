@@ -1,4 +1,3 @@
 .PHONY: docker
 docker:
-	docker build . -t paragor/tgbot-doe-bun:latest
-	docker push paragor/tgbot-doe-bun:latest
+	docker buildx build --push --platform linux/amd64,linux/arm64 . -t paragor/tgbot-doe-bun:latest

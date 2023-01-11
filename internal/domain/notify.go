@@ -49,7 +49,7 @@ func (n *NotifyWorker) round() error {
 			return fmt.Errorf("notify: cant send msg: %w", err)
 		}
 		task.Count++
-		task.Next.Add(n.delay)
+		task.Next = time.Now().Add(n.delay)
 		err = n.tdb.SaveTask(ctx, task)
 		if err != nil {
 			return fmt.Errorf("save: cant send task: %w", err)
